@@ -1,4 +1,6 @@
-let objList = `{
+'use strict'
+
+let objHeroes = {
     "info": {
         "count": 826,
         "pages": 42,
@@ -669,85 +671,67 @@ let objList = `{
             "created": "2017-11-04T22:34:53.659Z"
         }
     ]
-}`
+};
 
-/*Напишие приложение которе выведет список всех имен id и статусов персонажей из приведенного ниже массива объектов (лежит в файле).
-вывести нужно:
-      "id": 1,
-      "name": "Rick Sanchez",
-      "status": "Alive",
+const divWrapper = document.getElementById('wrapper'); //div wrapper
+const selectedName = document.getElementById('selected'); //p
+const divWrap = document.getElementsByClassName('wrap');
 
-При клике на кажую запись она должна подсвечиватся рамкой вокруг записи и вверху должно появлятся имя выбранного персонажа.
 
-На каждой записи есть кнопка удалить, по ее клику запись удаляется из списка (на картинке нет кнопки, разместить по вкусу)
+objHeroes.results.forEach(element => {
+    divWrapper.insertAdjacentHTML('beforebegin', `<div class="wrap" onclick ="handleHeroesCards(event), handleCardSelected(event)"><p class ="hero_id">${element.id}</p><p class ="hero_name">${element.name}</p><p class ="hero_status">${element.status}</p>
+    <button btn-name="delete">Delete</button></div>`);
+});
 
-Под списком должна быть кнопка, веруть как было, возвращяющая все записи.*/
-
-/*Вопросы:
-1 Как вывести нужный список (объект) в ДОМ? (цикл)? нужно 20 дивов?
-2 Как добавить аттрибут в ДОМ через жс?
-3 
-*/
-
-const parsedList = JSON.parse(objList); // getting JSON Data
-console.log(parsedList);
-
-let heroesArr = [...parsedList.results]; // getting Array of Obj
-console.log(heroesArr);
-
-let heroesRes = {
-    id: '',
-    name: '',
-    status: ''
+function handleHeroesCards(event) {
+    const curentRecord = event.target.innerText;
+    console.log(curentRecord);
+    selectedName.innerHTML = "Selected: " + curentRecord;
 };
 
 
-heroesArr.forEach((index) => {
-    heroesArr.filter(index => {
-        if (index.id && index.name && index.status) {
-            heroesRes.id = index.id;
-            heroesRes.name = index.name;
-            heroesRes.status = index.status;
-        };
+ const actionList = {
+    delete: (element) => {
+    element.remove();
+    }
+};
+
+let currentSelection = undefined;
+
+function handleCardSelected (event) {   //made frame
+    if (currentSelection) {
+        currentSelection.classList.remove('selected_item');
+    }
+    currentSelection = event.target;
+    event.target.classList.add('selected_item');
+    
+
+    const btnDelete = event.target.getAttribute('btn-name'); //deleting div
+    console.log(currentSelection.parentElement);
+
+    if (btnDelete) {
+        actionList[btnDelete](currentSelection.parentElement);
+        divWrap.innerHTML = divWrap.childElementCount - 1; //deleting of all div block
+    };
+};
+
+function resetActionHandler (event) {
+    objHeroes.results.forEach(element => {
+        divWrapper.insertAdjacentHTML('beforebegin', `<div class="wrap" onclick ="handleHeroesCards(event), handleCardSelected(event)"><p class ="hero_id">${element.id}</p><p class ="hero_name">${element.name}</p><p class ="hero_status">${element.status}</p>
+        <button btn-name="delete">Delete</button></div>`);
     });
-});
-console.log(heroesRes);
+};
 
 
-const divWrapper = document.getElementById('wrapper');
-const selectedName = document.getElementById('selected');
-const outsideField = document.getElementsByTagName('body'); // ..byTagName output array
 
 
-let div = document.createElement('div');
-let pId = document.createElement('p') //id
-let pName = document.createElement('p') //name
-let pStatus = document.createElement('p') //status
-let buttonDel = document.createElement('button') //button delete
-
-buttonDel.innerText = 'Delete';
-pId.innerText = `Id: ${heroesRes.id}`;
-pName.innerText = `Name: ${heroesRes.name}`;
-pStatus.innerText = `Status: ${heroesRes.status}`;
-
-//created classes
-pId.classList.add('hero_id'); 
-pName.classList.add('hero_name');
-pStatus.classList.add('hero_status');
-div.classList.add('wrap');
-buttonDel.classList.add('btn_delete');
 
 
-div.appendChild(pId);
-div.appendChild(pName);
-div.appendChild(pStatus);
-div.appendChild(buttonDel);
-divWrapper.appendChild(div);
 
-div.addEventListener('click', (event) => {
-    selectedName.innerHTML = "Selected: " + heroesRes.name;
-    // event.stopPropagation();
-}); 
+
+
+
+
 
 
 
